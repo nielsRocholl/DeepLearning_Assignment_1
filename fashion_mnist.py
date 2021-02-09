@@ -5,10 +5,13 @@ from tensorflow import keras
 import numpy as np
 import matplotlib.pyplot as plt
 
+# Models
+from cnn_model import cnn_model
+
 # 60,000 images that are made up of 28x28 pixels
 dataset = keras.datasets.fashion_mnist  # load dataset
 
-(train, train_labels), (test, test_labels) = dataset.load_data()  # split into tetsing and training
+(train, train_labels), (val, val_labels) = dataset.load_data()  # split into tetsing and training
 
 train.shape
 
@@ -19,37 +22,24 @@ classes = ['top/T-shirt', 'Trouser', 'Pullover', 'Dress', 'Coat',
 # Devide rgb values bt 255, which results in values between 0 and 1
 train = train / 255.0
 
-test = test / 255.0
+val = val / 255.0
 
-# Build model
-model = keras.Sequential([
-    keras.layers.Flatten(input_shape=(28, 28)),  # input layer (1)
-    keras.layers.Dense(128, activation='relu'),  # hidden layer (2)
-    keras.layers.Dense(10, activation='softmax') # output layer (3)
-])
-
-
-# compile model
-model.compile(optimizer='adam',
-              loss='sparse_categorical_crossentropy',
-              metrics=['accuracy'])
-# train model
-model.fit(train, train_labels, epochs=10)  # we pass the data, labels and epochs and watch the magic!
+model = cnn_model(train, val, train_labels, val_labels).cnn()
 
 # evaluate model
 
-test_loss, test_accuracy = model.evaluate(test, test_labels, verbose=True)
+test_loss, test_accuracy = model.evaluate(val, val_labels, verbose=True)
 
 print('Test accuracy:', test_accuracy)
 
 
-predict = model.predict(test)
+predict = model.predict(val)
 
 predict[0]
 
 np.argmax(predict[0])
 
-test_labels[0]
+val_labels[0]
 
 COLOR = 'white'
 plt.rcParams['text.color'] = COLOR
