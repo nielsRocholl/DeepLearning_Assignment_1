@@ -11,8 +11,14 @@ parser = argparse.ArgumentParser()
 # Models
 from cnn_model import cnn_model
 
-parser.add_argument("-d", "--dataset", type=str, default="cifar10",
-                    help="which dataset do you want to load, cifar10 or fashion_mnist?")
+parser.add_argument("-d", "--dataset", type=str, default="cifar10", help="which dataset do you want to load, cifar10 or fashion_mnist?")
+
+parser.add_argument("-o", "--optimizer", type=str, default="adam", help="which optimizer do you want to use?")
+
+args = parser.parse_args()
+
+if args.optimizer not in {'adam', 'sgd', 'sgdm', 'nadam'}:
+    parser.error("optimizer should be: adam, sgd, sgdm or nadam ")
 
 
 def load_data(data):
@@ -37,13 +43,9 @@ def main():
     # Divide rgb values by 255, which results in values between 0 and 1
     train = train / 255.0
     val = val / 255.0
-    model = cnn_model(train, val, train_labels, val_labels, shape).ResNet()
+    model = cnn_model(train, val, train_labels, val_labels, shape).AlexNet()
 
 
 if __name__ == "__main__":
     main()
 
-# # evaluate model
-# test_loss, test_accuracy = model.trained_model.evaluate(val, val_labels, verbose=True)
-
-# print('Test accuracy:', test_accuracy)
