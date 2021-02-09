@@ -106,7 +106,7 @@ class cnn_model:
         self.compile_and_fit(model)
 
     '''
-    TODO: not done yes, wont work
+    TODO: not done yet, wont work
     '''
 
     def InceptionV3(self):

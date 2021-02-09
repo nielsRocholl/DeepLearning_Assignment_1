@@ -34,10 +34,10 @@ def main():
     dataset, shape = load_data(args.dataset)
     # Split into tetsing and training
     (train, train_labels), (val, val_labels) = dataset.load_data()
-    # Divide rgb values bt 255, which results in values between 0 and 1
+    # Divide rgb values by 255, which results in values between 0 and 1
     train = train / 255.0
     val = val / 255.0
-    model = cnn_model(train, val, train_labels, val_labels, (32, 32, 3)).ResNet()
+    model = cnn_model(train, val, train_labels, val_labels, shape).ResNet()
 
 
 if __name__ == "__main__":
