@@ -4,28 +4,46 @@ from tensorflow import keras
 # Helper libraries
 import numpy as np
 import matplotlib.pyplot as plt
+import argparse
+
+parser = argparse.ArgumentParser()
 
 # Models
 from cnn_model import cnn_model
 
-# 60,000 images that are made up of 28x28 pixels
-dataset = keras.datasets.fashion_mnist  # load dataset
-(train, train_labels), (val, val_labels) = dataset.load_data()  # split into tetsing and training
+parser.add_argument("-d", "--dataset", type=str, default="cifar10",
+                    help="which dataset do you want to load, cifar10 or fashion_mnist?")
 
-# preprocess images
-train = train.reshape(train.shape[0], 28, 28, 1)
-val = val.reshape(val.shape[0], 28, 28, 1)
-input_shape = (28, 28, 1)
-train = train.astype('float32')
-val = val.astype('float32')
 
-# Divide rgb values bt 255, which results in values between 0 and 1
-train = train / 255.0
-val = val / 255.0
+def load_data(data):
+    # 50,000 32x32x3 color training images and 10,000 test images, labeled over 10 categories
+    if data == 'cifar10':
+        dataset = keras.datasets.cifar10
+        shape = (32, 32, 3)
+    # 60,000 images that are made up of 28x28x1 pixels, 10 categories
+    # TODO: These images are too small for most architectures (pooling layers reduce it too much)
+    if data == 'fashion_mnist':
+        dataset = keras.datasets.fashion_mnist
+        shape = (28, 28, 1)
+    return dataset, shape
 
-model = cnn_model(train, val, train_labels, val_labels, input_shape).AlexNet()
 
-# evaluate model
-test_loss, test_accuracy = model.trained_model.evaluate(val, val_labels, verbose=True)
+def main():
+    args = parser.parse_args()
+    # Load dataset
+    dataset, shape = load_data(args.dataset)
+    # Split into tetsing and training
+    (train, train_labels), (val, val_labels) = dataset.load_data()
+    # Divide rgb values bt 255, which results in values between 0 and 1
+    train = train / 255.0
+    val = val / 255.0
+    model = cnn_model(train, val, train_labels, val_labels, (32, 32, 3)).ResNet()
 
-print('Test accuracy:', test_accuracy)
+
+if __name__ == "__main__":
+    main()
+
+# # evaluate model
+# test_loss, test_accuracy = model.trained_model.evaluate(val, val_labels, verbose=True)
+
+# print('Test accuracy:', test_accuracy)

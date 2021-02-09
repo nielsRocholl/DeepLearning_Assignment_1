@@ -2,10 +2,11 @@
 from tensorflow import keras
 from keras import Model
 from keras.models import Sequential
+from keras.applications import InceptionV3, ResNet50
 from keras.utils import to_categorical
 from keras.losses import categorical_crossentropy
 from keras.preprocessing.image import ImageDataGenerator
-from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout, Activation
+from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout, Activation, GlobalAveragePooling2D
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers.normalization import BatchNormalization
 
@@ -73,7 +74,7 @@ class cnn_model:
 
 
     '''
-    Build the VGG model. Same pooling layer problem as with AlexNet
+    Build the VGG model.
     '''
 
     def VGG(self):
@@ -101,6 +102,40 @@ class cnn_model:
             Dense(units=4096,activation="relu"),
             Dense(units=self.classes, activation="softmax"),
             ])
+
+        self.compile_and_fit(model)
+
+    '''
+    TODO: not done yes, wont work
+    '''
+
+    def InceptionV3(self):
+        model = InceptionV3(
+                    include_top=False,
+                    weights="imagenet",
+                    input_tensor=None,
+                    input_shape=self.shape,
+                    pooling=None,
+                    classes=10,
+                    classifier_activation="softmax",
+                )
+        return model
+
+
+    '''
+    Build ResNet. Keras has a premade model in "applications", however we do not load the weights. 
+    '''
+
+    def ResNet(self):
+        base_model = ResNet50(
+            weights= None, 
+            include_top=False, 
+            input_shape= self.shape)
+        x = base_model.output
+        # x = GlobalAveragePooling2D()(x)
+        # x = Dropout(0.7)(x)
+        predictions = Dense(10, activation= 'softmax')(x)
+        model = Model(inputs = base_model.input, outputs = predictions)
 
         self.compile_and_fit(model)
 
