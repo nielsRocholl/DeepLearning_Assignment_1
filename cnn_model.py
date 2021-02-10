@@ -138,9 +138,11 @@ class cnn_model:
     '''
 
     def compile_and_fit(self, model):
-        model.compile(optimizer='adam', loss='sparse_categorical_crossentropy', metrics=['accuracy'])
+        model.compile(optimizer=self.optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
         model.fit(self.train, self.train_labels, validation_data=(self.val, self.val_labels), epochs=1000,
                   callbacks=[self.es, self.mc])
 
         return model
+
+

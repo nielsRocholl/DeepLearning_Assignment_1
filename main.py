@@ -1,6 +1,7 @@
 import tensorflow as tf
 from tensorflow import keras
 
+
 # Helper libraries
 import numpy as np
 import matplotlib.pyplot as plt
@@ -15,10 +16,15 @@ parser.add_argument("-d", "--dataset", type=str, default="cifar10", help="which 
 
 parser.add_argument("-o", "--optimizer", type=str, default="adam", help="which optimizer do you want to use?")
 
+parser.add_argument("-a", "--activation", type=str, default="adam", help="which actification function do you want to use?")
+
 args = parser.parse_args()
 
-if args.optimizer not in {'adam', 'sgd', 'sgdm', 'nadam'}:
-    parser.error("optimizer should be: adam, sgd, sgdm or nadam ")
+if args.optimizer not in {'adam', 'sgd', 'nadam'}:
+    parser.error("optimizer should be: adam, sgd, or nadam ")
+
+if args.activation not in {'relu', 'selu', 'hard_sigmoid'}:
+    parser.error("optimizer should be: relu, selu or hard_sigmoid")
 
 
 def load_data(data):
@@ -43,7 +49,7 @@ def main():
     # Divide rgb values by 255, which results in values between 0 and 1
     train = train / 255.0
     val = val / 255.0
-    model = cnn_model(train, val, train_labels, val_labels, shape).AlexNet()
+    model = cnn_model(train, val, train_labels, val_labels, shape,activation=args.activation, optimizer=args.optimizer).AlexNet()
 
 
 if __name__ == "__main__":
