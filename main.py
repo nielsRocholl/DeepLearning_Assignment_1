@@ -83,8 +83,11 @@ def main():
     steps_per_epoch = train_examples // batch_size
     validation_steps = test_examples // batch_size
 
-    model = cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
+    cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
                       activation=args.activation, optimizer=args.optimizer).cnn()
+
+
+
 
 
 if __name__ == "__main__":
