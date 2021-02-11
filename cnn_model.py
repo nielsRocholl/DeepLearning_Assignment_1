@@ -4,6 +4,8 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D
 from keras.models import Sequential
 
+import matplotlib.pyplot as plt
+
 '''
 A class that contains CNN architectures. This class can be used to create and train a
 CNN model. Once it is trained the model is returned. 
@@ -142,4 +144,36 @@ class cnn_model:
             verbose=1
         )
 
+        self.plot_training_results(final_model)
+
         return final_model
+
+    def plot_training_results(self, final_model):
+        accuracy = final_model.history['accuracy']
+        val_accuracy = final_model.history['val_accuracy']
+
+        loss = final_model.history['loss']
+        val_loss = final_model.history['val_loss']
+
+
+        plt.figure(figsize=(14, 4))
+
+        plt.subplot(1, 2, 2)
+        plt.title('Accuracy')
+        plt.xlabel('Epoch')
+        plt.ylabel('Accuracy')
+        plt.plot(accuracy, label='Training set')
+        plt.plot(val_accuracy, label='Test set', linestyle='--')
+        plt.legend()
+        plt.grid(linestyle='--', linewidth=1, alpha=0.5)
+
+        plt.subplot(1, 2, 1)
+        plt.title('Loss')
+        plt.xlabel('Epoch')
+        plt.ylabel('Loss')
+        plt.plot(loss, label='Training set')
+        plt.plot(val_loss, label='Test set', linestyle='--')
+        plt.legend()
+        plt.grid(linestyle='--', linewidth=1, alpha=0.5)
+
+        plt.show()
