@@ -1,4 +1,3 @@
-# import tensorflow as tf
 from keras import Model
 from keras.applications import InceptionV3, ResNet50
 from keras.callbacks import EarlyStopping, ModelCheckpoint
@@ -12,11 +11,9 @@ CNN model. Once it is trained the model is returned.
 
 
 class cnn_model:
-    def __init__(self, steps_per_epoch, validation_steps, train, val, input_shape, activation='relu', optimizer='adam',
-                 data_aug=False):
+    def __init__(self, steps_per_epoch, validation_steps, train, val, input_shape, activation='relu', optimizer='adam'):
         self.steps_per_epoch = steps_per_epoch
         self.validation_steps = validation_steps
-        # self.data_aug = data_aug
         self.optimizer = optimizer
         self.activation = activation
         self.shape = input_shape
@@ -135,10 +132,7 @@ class cnn_model:
     def compile_and_fit(self, model):
         model.compile(optimizer=self.optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
-        # model.fit(self.train, self.train_labels, validation_data=(self.val, self.val_labels), epochs=1000,
-        #           callbacks=[self.es, self.mc])
-
-        training_history = model.fit(
+        final_model = model.fit(
             x=self.train.repeat(),
             validation_data=self.val.repeat(),
             epochs=15,
@@ -148,4 +142,4 @@ class cnn_model:
             verbose=1
         )
 
-        return model
+        return final_model

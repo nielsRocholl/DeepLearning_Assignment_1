@@ -1,6 +1,7 @@
 import tensorflow as tf
 import tensorflow_datasets as tfds
 import argparse
+from augment import augment_data
 
 parser = argparse.ArgumentParser()
 
@@ -11,6 +12,9 @@ parser.add_argument("-o", "--optimizer", type=str, default="adam", help="which o
 
 parser.add_argument("-a", "--activation", type=str, default="adam",
                     help="which actification function do you want to use?")
+
+parser.add_argument("-aug", "--augment", type=str, default="False",
+                    help="Do you want to use data augmentation?")
 
 args = parser.parse_args()
 
@@ -57,6 +61,9 @@ def main():
     dataset_train = dataset_train_raw.map(format_example)
     dataset_test = dataset_test_raw.map(format_example)
 
+    if args.augment == 'True':
+        dataset_train = dataset_train.map(augment_data)
+
     batch_size = 32
 
     dataset_train_shuffled = dataset_train.shuffle(
@@ -67,7 +74,6 @@ def main():
         batch_size=batch_size
     )
 
-    # Prefetch will enable the input pipeline to asynchronously fetch batches while your model is training.
     dataset_train_shuffled = dataset_train_shuffled.prefetch(
         buffer_size=tf.data.experimental.AUTOTUNE
     )
