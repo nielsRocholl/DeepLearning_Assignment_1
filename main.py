@@ -16,6 +16,9 @@ parser.add_argument("-a", "--activation", type=str, default="adam",
 parser.add_argument("-aug", "--augment", type=str, default="False",
                     help="Do you want to use data augmentation?")
 
+parser.add_argument("-m", "--model", type=str, default="cnn",
+                    help="Which model do you want to use?")
+
 args = parser.parse_args()
 
 if args.optimizer not in {'adam', 'sgd', 'nadam'}:
@@ -24,6 +27,8 @@ if args.optimizer not in {'adam', 'sgd', 'nadam'}:
 if args.activation not in {'relu', 'selu', 'hard_sigmoid'}:
     parser.error("optimizer should be: relu, selu or hard_sigmoid")
 
+if args.model not in {'cnn', 'alexnet', 'vgg', 'inceptionv3', 'resnet'}:
+    parser.error("fout")
 
 def format_example(image, label):
     # Make image color values to be float.
@@ -83,8 +88,25 @@ def main():
     steps_per_epoch = train_examples // batch_size
     validation_steps = test_examples // batch_size
 
-    cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
-                      activation=args.activation, optimizer=args.optimizer).cnn()
+    if args.model == 'cnn':
+        cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
+                      args.model, activation=args.activation, optimizer=args.optimizer).cnn()
+    if args.model == 'alexnet':
+        cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
+                      args.model, activation=args.activation, optimizer=args.optimizer).AlexNet()
+
+    if args.model == 'vgg':
+        cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
+                      args.model, activation=args.activation, optimizer=args.optimizer).VGG()
+
+    if args.model == 'inceptionv3':
+        cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
+                      args.model, activation=args.activation, optimizer=args.optimizer).InceptionV3()
+    if args.model == 'resnet':
+        cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
+                      args.model, activation=args.activation, optimizer=args.optimizer).ResNet()
+
+
 
 
 

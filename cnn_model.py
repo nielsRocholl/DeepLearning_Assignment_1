@@ -1,4 +1,5 @@
 import os
+import pickle
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from keras import Model
 from keras.applications import InceptionV3, ResNet50
@@ -16,7 +17,7 @@ CNN model. Once it is trained the model is returned.
 
 
 class cnn_model:
-    def __init__(self, steps_per_epoch, validation_steps, train, val, input_shape, activation='relu', optimizer='adam'):
+    def __init__(self, steps_per_epoch, validation_steps, train, val, input_shape, model, activation='relu', optimizer='adam'):
         self.steps_per_epoch = steps_per_epoch
         self.validation_steps = validation_steps
         self.optimizer = optimizer
@@ -25,6 +26,7 @@ class cnn_model:
         self.train = train
         self.val = val
         self.classes = 3
+        self.model = model
         self.es = EarlyStopping(monitor='val_loss', mode='min', patience=5)
         self.mc = ModelCheckpoint('best_model', monitor='val_accuracy', mode='max', save_best_only=True)
 
@@ -109,7 +111,7 @@ class cnn_model:
     '''
 
     def InceptionV3(self):
-        base_model = InceptionV3(include_top=False, weights=None, input_shape=self.shape)
+        base_model = InceptionV3    (include_top=False, weights=None, input_shape=self.shape)
         x = base_model.output
         predictions = Dense(10, activation='softmax')(x)
         model = Model(inputs=base_model.input, outputs=predictions)
@@ -148,17 +150,23 @@ class cnn_model:
         )
 
         self.plot_training_results(final_model)
+        self.save_model(model)
 
     '''
     Plot accuracy and loss of the model during training
     '''
 
     def plot_training_results(self, final_model):
-        accuracy = final_model.history['accuracy']
-        val_accuracy = final_model.history['val_accuracy']
+        with open('Data/' + self.model, 'wb') as file_pi:
+               pickle.dump(final_model.history, file_pi)
 
-        loss = final_model.history['loss']
-        val_loss = final_model.history['val_loss']
+        history = pickle.load(open('Data/' + self.model, "rb"))
+
+        accuracy = history['accuracy']
+        val_accuracy = history['val_accuracy']
+
+        loss = history['loss']
+        val_loss = history['val_loss']
 
 
         plt.figure(figsize=(14, 4))
@@ -181,4 +189,10 @@ class cnn_model:
         plt.legend()
         plt.grid(linestyle='--', linewidth=1, alpha=0.5)
 
+
+        plt.savefig('Plots/' + self.model + '.png')
         plt.show()
+
+
+    def save_model(self, model):
+        model.save("Saved_Models/" + self.model + '.h5')
