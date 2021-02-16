@@ -7,7 +7,7 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D
 from keras.models import Sequential
 
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 
 
 '''
@@ -162,36 +162,36 @@ class cnn_model:
 
         history = pickle.load(open('Data/' + self.model, "rb"))
 
-        accuracy = history['accuracy']
-        val_accuracy = history['val_accuracy']
+        # accuracy = history['accuracy']
+        # val_accuracy = history['val_accuracy']
 
-        loss = history['loss']
-        val_loss = history['val_loss']
-
-
-        plt.figure(figsize=(14, 4))
-
-        plt.subplot(1, 2, 2)
-        plt.title('Accuracy')
-        plt.xlabel('Epoch')
-        plt.ylabel('Accuracy')
-        plt.plot(accuracy, label='Training set')
-        plt.plot(val_accuracy, label='Test set', linestyle='--')
-        plt.legend()
-        plt.grid(linestyle='--', linewidth=1, alpha=0.5)
-
-        plt.subplot(1, 2, 1)
-        plt.title('Loss')
-        plt.xlabel('Epoch')
-        plt.ylabel('Loss')
-        plt.plot(loss, label='Training set')
-        plt.plot(val_loss, label='Test set', linestyle='--')
-        plt.legend()
-        plt.grid(linestyle='--', linewidth=1, alpha=0.5)
+        # loss = history['loss']
+        # val_loss = history['val_loss']
 
 
-        plt.savefig('Plots/' + self.model + '.png')
-        plt.show()
+        # plt.figure(figsize=(14, 4))
+
+        # plt.subplot(1, 2, 2)
+        # plt.title('Accuracy')
+        # plt.xlabel('Epoch')
+        # plt.ylabel('Accuracy')
+        # plt.plot(accuracy, label='Training set')
+        # plt.plot(val_accuracy, label='Test set', linestyle='--')
+        # plt.legend()
+        # plt.grid(linestyle='--', linewidth=1, alpha=0.5)
+
+        # plt.subplot(1, 2, 1)
+        # plt.title('Loss')
+        # plt.xlabel('Epoch')
+        # plt.ylabel('Loss')
+        # plt.plot(loss, label='Training set')
+        # plt.plot(val_loss, label='Test set', linestyle='--')
+        # plt.legend()
+        # plt.grid(linestyle='--', linewidth=1, alpha=0.5)
+
+
+        # plt.savefig('Plots/' + self.model + '.png')
+        # plt.show()
 
 
     def save_model(self, model):
