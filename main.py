@@ -101,24 +101,18 @@ def main():
 
     steps_per_epoch = train_examples // batch_size
     validation_steps = test_examples // batch_size
-    model = None
+    model = cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape, args.model, activation=args.activation, optimizer=args.optimizer)
     if args.model == 'cnn':
-        model = cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
-                      args.model, activation=args.activation, optimizer=args.optimizer).cnn()
+        model.cnn()
     if args.model == 'alexnet':
-        model = cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
-                      args.model, activation=args.activation, optimizer=args.optimizer).AlexNet()
-
+        model.AlexNet()
     if args.model == 'vgg':
-        model = cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
-                      args.model, activation=args.activation, optimizer=args.optimizer).VGG()
-
+        model.VGG()
     if args.model == 'inceptionv3':
-        model = cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
-                      args.model, activation=args.activation, optimizer=args.optimizer).InceptionV3()
+        model.InceptionV3()
     if args.model == 'resnet':
-        model = cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
-                      args.model, activation=args.activation, optimizer=args.optimizer).ResNet()
+        model.ResNet()
+
     model.save_final_model(output_path)
     
 
