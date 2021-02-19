@@ -2,15 +2,16 @@ import tensorflow as tf
 import tensorflow_datasets as tfds
 import argparse
 from augment import augment_data
+import os
 
 parser = argparse.ArgumentParser()
 
 # Models
-from cnn_model import cnn_model
+#from cnn_model import cnn_model
 
 parser.add_argument("-o", "--optimizer", type=str, default="adam", help="which optimizer do you want to use?")
 
-parser.add_argument("-a", "--activation", type=str, default="adam",
+parser.add_argument("-a", "--activation", type=str, default="relu",
                     help="which actification function do you want to use?")
 
 parser.add_argument("-aug", "--augment", type=str, default="False",
@@ -19,7 +20,11 @@ parser.add_argument("-aug", "--augment", type=str, default="False",
 parser.add_argument("-m", "--model", type=str, default="cnn",
                     help="Which model do you want to use?")
 
+parser.add_argument("-out", "--output_path", type=str, default="training_output/",
+                    help="Where to save the training results?")
+
 args = parser.parse_args()
+
 
 if args.optimizer not in {'adam', 'sgd', 'nadam'}:
     parser.error("optimizer should be: adam, sgd, or nadam ")
@@ -28,7 +33,16 @@ if args.activation not in {'relu', 'selu', 'hard_sigmoid'}:
     parser.error("optimizer should be: relu, selu or hard_sigmoid")
 
 if args.model not in {'cnn', 'alexnet', 'vgg', 'inceptionv3', 'resnet'}:
-    parser.error("fout")
+    parser.error("%s is not a known model" % args.model)
+
+# Construct a name for the output
+output_name = "{model}_{optimizer}_{activation}_{augment}".format(**vars(args))
+output_path = os.path.join(args.output_path, output_name)
+print("Writing training results to: %s" % output_path)
+
+# Create output directory
+if not os.path.exists(output_path):
+    os.makedirs(output_path)
 
 def format_example(image, label):
     # Make image color values to be float.
@@ -87,26 +101,26 @@ def main():
 
     steps_per_epoch = train_examples // batch_size
     validation_steps = test_examples // batch_size
-
+    model = None
     if args.model == 'cnn':
-        cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
+        model = cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
                       args.model, activation=args.activation, optimizer=args.optimizer).cnn()
     if args.model == 'alexnet':
-        cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
+        model = cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
                       args.model, activation=args.activation, optimizer=args.optimizer).AlexNet()
 
     if args.model == 'vgg':
-        cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
+        model = cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
                       args.model, activation=args.activation, optimizer=args.optimizer).VGG()
 
     if args.model == 'inceptionv3':
-        cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
+        model = cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
                       args.model, activation=args.activation, optimizer=args.optimizer).InceptionV3()
     if args.model == 'resnet':
-        cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
+        model = cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape,
                       args.model, activation=args.activation, optimizer=args.optimizer).ResNet()
-
-
+    model.save_final_model(output_path)
+    
 
 
 

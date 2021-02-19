@@ -1,4 +1,5 @@
 import os
+import numpy as np
 import pickle
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from keras import Model
@@ -71,7 +72,6 @@ class cnn_model:
             Dense(1000, activation=self.activation),
             Dense(self.classes, activation='softmax'),
         ])
-
         self.compile_and_fit(model)
 
     '''
@@ -148,9 +148,9 @@ class cnn_model:
             callbacks=[self.es, self.mc],
             verbose=1
         )
-
-        self.plot_training_results(final_model)
-        self.save_model(model)
+        self.final_model = final_model
+        #self.plot_training_results(final_model)
+        #self.save_model(model)
 
     '''
     Plot accuracy and loss of the model during training
@@ -194,5 +194,8 @@ class cnn_model:
         # plt.show()
 
 
-    def save_model(self, model):
-        model.save("Saved_Models/" + self.model + '.h5')
+    def save_final_model(self, output_dir):
+        model_path = os.path.join(output_dir, "model.h5")
+        history_path = os.path.join(output_dir, "history.npy")
+        self.final_model.save(path)
+        np.save(history_path, self.final_model.history)
