@@ -7,7 +7,7 @@ import os
 parser = argparse.ArgumentParser()
 
 # Models
-#from cnn_model import cnn_model
+from cnn_model import cnn_model
 
 parser.add_argument("-o", "--optimizer", type=str, default="adam", help="which optimizer do you want to use?")
 
