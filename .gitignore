@@ -1,0 +1,6 @@
+best_model/
+.bash_history
+.cache/
+__pycache__
+tmp/
+training_output/
