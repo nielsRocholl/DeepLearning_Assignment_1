@@ -148,6 +148,7 @@ class cnn_model:
             callbacks=[self.es, self.mc],
             verbose=1
         )
+        self.model = model
         self.final_model = final_model
         #self.plot_training_results(final_model)
         #self.save_model(model)
@@ -197,5 +198,5 @@ class cnn_model:
     def save_final_model(self, output_dir):
         model_path = os.path.join(output_dir, "model.h5")
         history_path = os.path.join(output_dir, "history.npy")
-        self.final_model.save(path)
+        self.model.save(model_path)
         np.save(history_path, self.final_model.history)
