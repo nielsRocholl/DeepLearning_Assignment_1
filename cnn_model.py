@@ -123,20 +123,19 @@ class cnn_model:
     '''
 
     def ResNet(self):
-        base_model = ResNet50(weights=None, include_top=False, input_shape=self.shape)
+        base_model = ResNet50(weights=None, include_top=True, input_shape=self.shape, classes = 3)
         x = base_model.output
         # x = GlobalAveragePooling2D()(x)
         # x = Dropout(0.7)(x)
-        predictions = Dense(10, activation='softmax')(x)
-        model = Model(inputs=base_model.input, outputs=predictions)
+        #predictions = Dense(3, activation='softmax')(x)
+        model = Model(inputs=base_model.input, outputs=x)
 
         self.compile_and_fit(model)
 
-    '''
-    Compile and fit the model, then return it. 
-    '''
+
 
     def compile_and_fit(self, model):
+        """Compile and train the model"""
         model.compile(optimizer=self.optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
         final_model = model.fit(
