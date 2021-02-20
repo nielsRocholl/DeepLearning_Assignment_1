@@ -54,7 +54,7 @@ def format_example(image, label):
     return image, label
 
 
-def main():
+if __name__ == "__main__":
     (dataset_train_raw, dataset_test_raw), dataset_info = tfds.load(
         name='rock_paper_scissors',
         data_dir='tmp',
@@ -114,11 +114,3 @@ def main():
         model.ResNet()
 
     model.save_final_model(output_path)
-    
-
-
-
-
-
-if __name__ == "__main__":
-    main()

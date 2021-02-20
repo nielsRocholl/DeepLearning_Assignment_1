@@ -150,9 +150,12 @@ class cnn_model:
         )
         self.model = model
         self.final_model = final_model
+        self.calculate_confusion()
         #self.plot_training_results(final_model)
         #self.save_model(model)
-
+        # Determine the confusion matrix
+        #predictions = model.predict(self.val)
+        #print(predictions)
     '''
     Plot accuracy and loss of the model during training
     '''
@@ -195,8 +198,23 @@ class cnn_model:
         # plt.show()
 
 
+    def calculate_confusion(self):
+        predictions = predictions = self.model.predict(self.val)
+        validation_classes = np.concatenate([y for (x,y) in self.val.as_numpy_iterator()])
+        predicted_classes = np.argmax(predictions, axis=1)
+        self.confusion_matrix = np.zeros((self.classes, self.classes))
+        for predicted in range(self.classes):
+            for actual in range(self.classes):
+                self.confusion_matrix[predicted, actual] = np.sum(np.logical_and(
+                    predicted_classes == predicted,
+                    validation_classes == actual
+                ))
+        
     def save_final_model(self, output_dir):
         model_path = os.path.join(output_dir, "model.h5")
         history_path = os.path.join(output_dir, "history.npy")
+        confusion_path = os.path.join(output_dir, "confusion.npy")        
         self.model.save(model_path)
         np.save(history_path, self.final_model.history)
+        np.save(confusion_path, self.confusion_matrix)
+    
