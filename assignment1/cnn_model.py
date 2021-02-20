@@ -171,7 +171,7 @@ class cnn_model:
         # val_accuracy = history['val_accuracy']
 
         # loss = history['loss']
-        # val_loss = history['val_loss']
+         # val_loss = history['val_loss']
 
 
         # plt.figure(figsize=(14, 4))
@@ -218,4 +218,4 @@ class cnn_model:
         self.model.save(model_path)
         np.save(history_path, self.final_model.history)
         np.save(confusion_path, self.confusion_matrix)
-    
+   
