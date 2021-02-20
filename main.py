@@ -3,46 +3,7 @@ import tensorflow_datasets as tfds
 import argparse
 from augment import augment_data
 import os
-
-parser = argparse.ArgumentParser()
-
-# Models
 from cnn_model import cnn_model
-
-parser.add_argument("-o", "--optimizer", type=str, default="adam", help="which optimizer do you want to use?")
-
-parser.add_argument("-a", "--activation", type=str, default="relu",
-                    help="which actification function do you want to use?")
-
-parser.add_argument("-aug", "--augment", type=str, default="False",
-                    help="Do you want to use data augmentation?")
-
-parser.add_argument("-m", "--model", type=str, default="cnn",
-                    help="Which model do you want to use?")
-
-parser.add_argument("-out", "--output_path", type=str, default="training_output/",
-                    help="Where to save the training results?")
-
-args = parser.parse_args()
-
-
-if args.optimizer not in {'adam', 'sgd', 'nadam'}:
-    parser.error("optimizer should be: adam, sgd, or nadam ")
-
-if args.activation not in {'relu', 'selu', 'hard_sigmoid'}:
-    parser.error("optimizer should be: relu, selu or hard_sigmoid")
-
-if args.model not in {'cnn', 'alexnet', 'vgg', 'inceptionv3', 'resnet'}:
-    parser.error("%s is not a known model" % args.model)
-
-# Construct a name for the output
-output_name = "{model}_{optimizer}_{activation}_{augment}".format(**vars(args))
-output_path = os.path.join(args.output_path, output_name)
-print("Writing training results to: %s" % output_path)
-
-# Create output directory
-if not os.path.exists(output_path):
-    os.makedirs(output_path)
 
 def format_example(image, label):
     # Make image color values to be float.
@@ -53,8 +14,45 @@ def format_example(image, label):
     image = tf.image.resize(image, [150, 150])
     return image, label
 
+def parse_arguments():
+    """Parse command line arguments"""
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-o", "--optimizer", type=str, default="adam", help="which optimizer do you want to use?")
 
-if __name__ == "__main__":
+    parser.add_argument("-a", "--activation", type=str, default="relu",
+                        help="which actification function do you want to use?")
+
+    parser.add_argument("-aug", "--augment", type=str, default="False",
+                        help="Do you want to use data augmentation?")
+
+    parser.add_argument("-m", "--model", type=str, default="cnn",
+                        help="Which model do you want to use?")
+
+    parser.add_argument("-out", "--output_path", type=str, default="training_output/",
+                        help="Where to save the training results?")
+
+    parser.add_argument("-r", "--repeats", type=str, default="1",
+                        help="How many times to repeat the training?")
+
+    args = parser.parse_args()
+
+    if args.optimizer not in {'adam', 'sgd', 'nadam'}:
+        parser.error("optimizer should be: adam, sgd, or nadam ")
+
+    if args.activation not in {'relu', 'selu', 'hard_sigmoid'}:
+        parser.error("optimizer should be: relu, selu or hard_sigmoid")
+
+    if args.model not in {'cnn', 'alexnet', 'vgg', 'inceptionv3', 'resnet'}:
+        parser.error("%s is not a known model" % args.model)
+    try:
+        args.repeats = int(args.repeats)
+        assert(args.repeats > 0)
+    except:
+        parser.error("Repeats should be a positive integer")
+    return args
+
+def load_dataset():
+    """Load and pre-process the Rock, Paper, Scissors dataset"""
     (dataset_train_raw, dataset_test_raw), dataset_info = tfds.load(
         name='rock_paper_scissors',
         data_dir='tmp',
@@ -62,9 +60,6 @@ if __name__ == "__main__":
         as_supervised=True,
         split=[tfds.Split.TRAIN, tfds.Split.TEST],
     )
-    train_examples = dataset_info.splits['train'].num_examples
-    test_examples = dataset_info.splits['test'].num_examples
-
     input_size_original = dataset_info.features['image'].shape[0]
     input_shape_original = dataset_info.features['image'].shape
 
@@ -79,7 +74,13 @@ if __name__ == "__main__":
 
     dataset_train = dataset_train_raw.map(format_example)
     dataset_test = dataset_test_raw.map(format_example)
+    return ((dataset_train, dataset_test), dataset_info, input_shape)
 
+def train_model(args, dataset, repeat, save=True):
+    """Train a model based on the specified arguments. Optionally save the result. """
+    ((dataset_train, dataset_test), dataset_info, input_shape) = dataset
+    train_examples = dataset_info.splits['train'].num_examples
+    test_examples = dataset_info.splits['test'].num_examples
     if args.augment == 'True':
         dataset_train = dataset_train.map(augment_data)
 
@@ -112,5 +113,25 @@ if __name__ == "__main__":
         model.InceptionV3()
     if args.model == 'resnet':
         model.ResNet()
+    if save:
+        # Construct a name for the output
+        output_name = "{model}_{optimizer}_{activation}_{augment}_{repeat}".format(repeat=repeat, **vars(args))
+        output_path = os.path.join(args.output_path, output_name)
+        print("Writing training results to: %s" % output_path)
 
-    model.save_final_model(output_path)
+        # Create output directory
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)
+        
+        model.save_final_model(output_path)    
+
+if __name__ == "__main__":
+    # Parse arguments
+    args = parse_arguments()
+
+    # Load the dataset
+    dataset = load_dataset()
+
+    # Train the model
+    for rep in range(args.repeats):
+        train_model(args, dataset, rep, True)

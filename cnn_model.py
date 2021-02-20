@@ -6,7 +6,7 @@ from keras import Model
 from keras.applications import InceptionV3, ResNet50
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D
-from keras.models import Sequential
+from keras.models import Sequential, load_model
 
 # import matplotlib.pyplot as plt
 
@@ -148,7 +148,9 @@ class cnn_model:
             callbacks=[self.es, self.mc],
             verbose=1
         )
-        self.model = model
+
+        # Load best model checkpoint
+        self.model = load_model(self.mc.filepath)
         self.final_model = final_model
         self.calculate_confusion()
         #self.plot_training_results(final_model)
