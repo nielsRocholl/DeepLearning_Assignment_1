@@ -94,4 +94,4 @@ def plot_confusion_matrix(cm, classes,
     # if save_path is None:
     plt.show()
     # else:
-    plt.savefig(save_path)    
+    # plt.savefig(save_path)    
