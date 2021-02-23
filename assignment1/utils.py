@@ -25,9 +25,6 @@ def parse_arguments():
     if args.optimizer not in {'adam', 'sgd', 'nadam'}:
         parser.error("optimizer should be: adam, sgd, or nadam ")
 
-    if args.activation not in {'relu', 'selu', 'sigmoid'}:
-        parser.error("optimizer should be: relu, selu or sigmoid")
-
     if args.model not in {'cnn', 'alexnet', 'vgg', 'inceptionv3', 'resnet'}:
         parser.error("%s is not a known model" % args.model)
     try:
