@@ -11,7 +11,8 @@ if __name__ == "__main__":
 
     cm_plot_labels = ['rock','paper', 'scissors']
     cm = stats['mean_confusion']
-    analysis.plot_confusion_matrix(cm=cm, classes=cm_plot_labels, title='Confusion Matrix')
+    save_path = os.path.join(args.output_path, run_name(vars(args), 'confusion' + ".png"))
+    analysis.plot_confusion_matrix(cm=cm, classes=cm_plot_labels, title='Confusion Matrix', save_path=save_path)
     for var in ["val_accuracy", "val_loss", "accuracy", "loss"]:
         save_path = os.path.join(
             args.output_path,
