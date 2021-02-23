@@ -91,7 +91,7 @@ def plot_confusion_matrix(cm, classes,
     plt.tight_layout()
     plt.ylabel('True label')
     plt.xlabel('Predicted label')
-    if save_path is None:
-        plt.show()
-    else:
-        plt.savefig(save_path)    
+    # if save_path is None:
+    plt.show()
+    # else:
+    plt.savefig(save_path)    
