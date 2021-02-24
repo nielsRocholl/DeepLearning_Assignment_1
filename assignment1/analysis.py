@@ -5,6 +5,7 @@ import itertools
 
 from utils import run_name
 
+
 def load_result(path, parameters, repeat):
     run_path = os.path.join(path, run_name(parameters, repeat))
     history_path = os.path.join(run_path, 'history.npy')
@@ -81,7 +82,7 @@ def plot_history(stats, save_path = None):
     else:
         plt.savefig(save_path + 'loss.png')
     plt.clf()
-    
+
     # plt.figure(figsize=(6, 4))
     # plt.show()
     # for h in stats['history']:
@@ -130,4 +131,4 @@ def plot_confusion_matrix(cm, classes,
         plt.show()
     else:
         plt.savefig(save_path)
-    plt.close  
+    plt.clf()  
