@@ -28,7 +28,7 @@ class cnn_model:
         self.val = val
         self.classes = 3
         self.model = model
-        self.es = EarlyStopping(monitor='val_loss', mode='min', patience=2)
+        self.es = EarlyStopping(monitor='val_loss', mode='min', patience=10)
         self.mc = ModelCheckpoint('best_model', monitor='val_accuracy', mode='max', save_best_only=True)
 
     '''
