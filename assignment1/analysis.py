@@ -51,6 +51,7 @@ def plot_history(stats, save_path = None):
     """
     Plot a variable of the history
     """
+    plt.figure(figsize=(8, 6), dpi=80)
     plt.title('Accuracy')
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
@@ -66,7 +67,8 @@ def plot_history(stats, save_path = None):
     else:
         plt.savefig(save_path + 'accuracy.png')
     plt.clf()
-        
+
+    plt.figure(figsize=(8, 6), dpi=80)
     plt.title('Loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
