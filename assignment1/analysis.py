@@ -42,21 +42,54 @@ def load_repeats(path, parameters, num_repeats):
         'best_train_acc' : best_train,
         'parameters' : parameters
     }
-    return stats
+    return stats, history
 
-def plot_history(stats, variable = 'val_accuracy', save_path = None):
+def plot_history(stats, save_path = None):
     """
     Plot a variable of the history
     """
-    plt.figure(figsize=(6, 4))
-    for h in stats['history']:
-        plt.plot(h[variable])
-    plt.xlabel('epoch')
-    plt.ylabel(variable)
+    history = stats
+    accuracy = history['accuracy']
+    val_accuracy = history['val_accuracy']
+
+    loss = history['loss']
+    val_loss = history['val_loss']
+
+
+    plt.figure(figsize=(14, 4))
+
+    plt.subplot(1, 2, 2)
+    plt.title('Accuracy')
+    plt.xlabel('Epoch')
+    plt.ylabel('Accuracy')
+    plt.plot(accuracy, label='Training set')
+    plt.plot(val_accuracy, label='Test set', linestyle='--')
+    plt.legend()
+    plt.grid(linestyle='--', linewidth=1, alpha=0.5)
+
+    plt.subplot(1, 2, 1)
+    plt.title('Loss')
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.plot(loss, label='Training set')
+    plt.plot(val_loss, label='Test set', linestyle='--')
+    plt.legend()
+    plt.grid(linestyle='--', linewidth=1, alpha=0.5)
+
     if save_path is None:
         plt.show()
     else:
         plt.savefig(save_path)
+    # plt.figure(figsize=(6, 4))
+    # plt.show()
+    # for h in stats['history']:
+    #     plt.plot(h[variable])
+    # plt.xlabel('epoch')
+    # plt.ylabel(variable)
+    # if save_path is None:
+    #     plt.show()
+    # else:
+    #     plt.savefig(save_path)
 
 
 def plot_confusion_matrix(cm, classes,
