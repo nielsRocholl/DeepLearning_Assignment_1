@@ -42,28 +42,22 @@ def load_repeats(path, parameters, num_repeats):
         'best_train_acc' : best_train,
         'parameters' : parameters
     }
-    return stats, history
+    return stats
 
 def plot_history(stats, save_path = None):
     """
     Plot a variable of the history
     """
-    history = stats
-    accuracy = history['accuracy']
-    val_accuracy = history['val_accuracy']
-
-    loss = history['loss']
-    val_loss = history['val_loss']
-
-
     plt.figure(figsize=(14, 4))
 
     plt.subplot(1, 2, 2)
     plt.title('Accuracy')
     plt.xlabel('Epoch')
     plt.ylabel('Accuracy')
-    plt.plot(accuracy, label='Training set')
-    plt.plot(val_accuracy, label='Test set', linestyle='--')
+    for idx, a in  enumerate(stats['history']):
+        plt.plot(a['accuracy'], label='Training set ' + str(idx))
+    for idx, a in  enumerate(stats['history']):
+        plt.plot(a['val_accuracy'], label='Test set ' + str(idx), linestyle='--')
     plt.legend()
     plt.grid(linestyle='--', linewidth=1, alpha=0.5)
 
@@ -71,8 +65,10 @@ def plot_history(stats, save_path = None):
     plt.title('Loss')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
-    plt.plot(loss, label='Training set')
-    plt.plot(val_loss, label='Test set', linestyle='--')
+    for idx, a in  enumerate(stats['history']):
+        plt.plot(a['loss'], label='Training set ' + str(idx))
+    for idx, a in enumerate(stats['history']):
+        plt.plot(a['val_loss'], label='Test set ' + str(idx), linestyle='--')
     plt.legend()
     plt.grid(linestyle='--', linewidth=1, alpha=0.5)
 

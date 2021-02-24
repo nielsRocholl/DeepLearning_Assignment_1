@@ -7,7 +7,7 @@ import analysis
 
 if __name__ == "__main__":
     args = parse_arguments()
-    stats, history = analysis.load_repeats(args.output_path, vars(args), args.repeats)
+    stats = analysis.load_repeats(args.output_path, vars(args), args.repeats)
 
     cm_plot_labels = ['rock','paper', 'scissors']
     cm = stats['mean_confusion']
@@ -19,4 +19,4 @@ if __name__ == "__main__":
     #         run_name(vars(args), var + ".png")
     #     )
     save_path = os.path.join(args.output_path, run_name(vars(args), ".png"))
-    analysis.plot_history(history, save_path = save_path)
+    analysis.plot_history(stats, save_path = save_path)
