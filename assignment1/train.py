@@ -68,7 +68,7 @@ def train_model(args, dataset, repeat, save=True):
 
     steps_per_epoch = train_examples // batch_size
     validation_steps = test_examples // batch_size
-    model = cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape, args.model, activation=args.activation, optimizer=args.optimizer)
+    model = cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape, args.model, activation=args.activation, optimizer=args.optimizer, epochs = args.epochs)
     if args.model == 'cnn':
         model.cnn()
     if args.model == 'alexnet':
@@ -90,7 +90,11 @@ def train_model(args, dataset, repeat, save=True):
             os.makedirs(output_path)
         
         model.save_final_model(output_path)    
-
+        # Write model summary to output
+        summary_file = os.path.join(output_path, 'summary.txt')
+        with open(summary_file, "w") as summary:
+          model.model.summary(print_fn = lambda x: summary.write(x + '\n'))
+          #summary.write(model.model.summary())
 if __name__ == "__main__":
     # Parse arguments
     args = parse_arguments()
