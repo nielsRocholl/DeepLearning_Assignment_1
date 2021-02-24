@@ -5,7 +5,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from keras import Model
 from keras.applications import InceptionV3, ResNet50
 from keras.callbacks import EarlyStopping, ModelCheckpoint
-from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D
+from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, AveragePooling2D
 from keras.models import Sequential, load_model
 
 # import matplotlib.pyplot as plt
@@ -28,7 +28,7 @@ class cnn_model:
         self.val = val
         self.classes = 3
         self.model = model
-        self.es = EarlyStopping(monitor='val_loss', mode='min', patience=5)
+        self.es = EarlyStopping(monitor='val_loss', mode='min', patience=2)
         self.mc = ModelCheckpoint('best_model', monitor='val_accuracy', mode='max', save_best_only=True)
 
     '''
@@ -129,6 +129,21 @@ class cnn_model:
         # x = Dropout(0.7)(x)
         #predictions = Dense(3, activation='softmax')(x)
         model = Model(inputs=base_model.input, outputs=x)
+
+        self.compile_and_fit(model)
+
+
+    def LeNet(self):
+        model = Sequential([
+          Conv2D(filters=6, kernel_size=(3, 3), activation='relu', input_shape=self.shape),
+          AveragePooling2D(),
+          Conv2D(filters=16, kernel_size=(3, 3), activation='relu'),
+          AveragePooling2D(),
+          Flatten(),
+          Dense(units=120, activation='relu'),
+          Dense(units=84, activation='relu'),
+          Dense(units=self.classes, activation = 'softmax'),
+        ])
 
         self.compile_and_fit(model)
 

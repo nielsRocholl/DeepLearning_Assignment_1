@@ -75,8 +75,8 @@ def train_model(args, dataset, repeat, save=True):
         model.AlexNet()
     if args.model == 'vgg':
         model.VGG()
-    if args.model == 'inceptionv3':
-        model.InceptionV3()
+    if args.model == 'lenet':
+        model.LeNet()
     if args.model == 'resnet':
         model.ResNet()
     if save:
