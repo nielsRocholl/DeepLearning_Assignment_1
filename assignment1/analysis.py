@@ -107,7 +107,7 @@ def plot_confusion_matrix(cm, classes,
     """
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
     plt.title(title, size="x-large")
-    plt.colorbar(size="x-large")
+    plt.colorbar()
     tick_marks = np.arange(len(classes))
     plt.xticks(tick_marks, classes, rotation=45, size="xx-large")
     plt.yticks(tick_marks, classes, size="xx-large" )
