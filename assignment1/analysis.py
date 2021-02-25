@@ -106,11 +106,11 @@ def plot_confusion_matrix(cm, classes,
     Normalization can be applied by setting `normalize=True`.
     """
     plt.imshow(cm, interpolation='nearest', cmap=cmap)
-    plt.title(title)
-    plt.colorbar()
+    plt.title(title, size="x-large")
+    plt.colorbar(size="x-large")
     tick_marks = np.arange(len(classes))
-    plt.xticks(tick_marks, classes, rotation=45)
-    plt.yticks(tick_marks, classes)
+    plt.xticks(tick_marks, classes, rotation=45, size="xx-large")
+    plt.yticks(tick_marks, classes, size="xx-large" )
 
     if normalize:
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
@@ -124,11 +124,13 @@ def plot_confusion_matrix(cm, classes,
     for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
         plt.text(j, i, cm[i, j],
             horizontalalignment="center",
-            color="white" if cm[i, j] > thresh else "black")
+            color="white" if cm[i, j] > thresh else "black", size="x-large")
 
     plt.tight_layout()
-    plt.ylabel('True label')
-    plt.xlabel('Predicted label')
+    plt.ylabel('True label', size="xx-large")
+    plt.xlabel('Predicted label', size="xx-large")
+    plt.tight_layout()
+
     if save_path is None:
         plt.show()
     else:
