@@ -5,7 +5,7 @@ import argparse
 
 from augment import augment_data
 from cnn_model import cnn_model
-from utils import run_name, parse_arguments
+from utils import run_name, parse_arguments, iterate_args
 
 
 def format_example(image, label):
@@ -97,5 +97,5 @@ if __name__ == "__main__":
     dataset = load_dataset()
 
     # Train the model
-    for rep in range(args.repeats):
-        train_model(args, dataset, rep, True)
+    for run_args, rep in iterate_args(args):
+        train_model(run_args, dataset, rep, True)
