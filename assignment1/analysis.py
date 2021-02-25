@@ -127,8 +127,8 @@ def plot_confusion_matrix(cm, classes,
             color="white" if cm[i, j] > thresh else "black", size="x-large")
 
     plt.tight_layout()
-    plt.ylabel('True label', size="xx-large")
-    plt.xlabel('Predicted label', size="xx-large")
+    plt.ylabel('Predicted label', size="xx-large")
+    plt.xlabel('True label', size="xx-large")
     plt.tight_layout()
 
     if save_path is None:
