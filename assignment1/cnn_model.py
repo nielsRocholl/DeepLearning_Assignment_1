@@ -1,7 +1,7 @@
 import os
 import numpy as np
 import pickle
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+#os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 from keras import Model
 from keras.applications import InceptionV3, ResNet50
 from keras.callbacks import EarlyStopping, ModelCheckpoint
@@ -18,7 +18,7 @@ CNN model. Once it is trained the model is returned.
 
 
 class cnn_model:
-    def __init__(self, steps_per_epoch, validation_steps, train, val, input_shape, model, activation='relu', optimizer='adam'):
+    def __init__(self, steps_per_epoch, validation_steps, train, val, input_shape, model, activation='relu', optimizer='adam', epochs = 'es'):
         self.steps_per_epoch = steps_per_epoch
         self.validation_steps = validation_steps
         self.optimizer = optimizer
@@ -28,7 +28,12 @@ class cnn_model:
         self.val = val
         self.classes = 3
         self.model = model
-        self.es = EarlyStopping(monitor='val_loss', mode='min', patience=10)
+        if epochs == 'es':
+            self.es = EarlyStopping(monitor='val_loss', mode='min', patience=10)
+            self.epochs = 100
+        else:
+            self.es = None
+            self.epochs = epochs
         self.mc = ModelCheckpoint('best_model', monitor='val_accuracy', mode='max', save_best_only=True)
 
     '''
@@ -153,13 +158,17 @@ class cnn_model:
         """Compile and train the model"""
         model.compile(optimizer=self.optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
+        if self.es is None:
+            callbacks = [self.mc]
+        else:
+            callbacks = [self.es, self.mc]
         final_model = model.fit(
             x=self.train.repeat(),
             validation_data=self.val.repeat(),
-            epochs=100,
+            epochs=self.epochs,
             steps_per_epoch=self.steps_per_epoch,
             validation_steps=self.validation_steps,
-            callbacks=[self.es, self.mc],
+            callbacks=callbacks,
             verbose=1
         )
 

@@ -26,27 +26,20 @@ def load_dataset():
         as_supervised=True,
         split=[tfds.Split.TRAIN, tfds.Split.TEST],
     )
-    input_size_original = dataset_info.features['image'].shape[0]
-    input_shape_original = dataset_info.features['image'].shape
 
-    input_size_reduced = input_size_original // 2
-    input_shape_reduced = (
-        input_size_reduced,
-        input_size_reduced,
-        input_shape_original[2]
-    )
-    # INPUT_IMG_SIZE = input_size_reduced
-    input_shape = input_shape_reduced
+    # Convert input to float and resize to 150x150
+    input_shape = (150, 150, 3)
+    dataset_train = dataset_train_raw.map(format_example).cache()
+    dataset_test = dataset_test_raw.map(format_example).cache()
 
-    dataset_train = dataset_train_raw.map(format_example)
-    dataset_test = dataset_test_raw.map(format_example)
-    return ((dataset_train, dataset_test), dataset_info, input_shape)
+    return ((dataset_train, dataset_test), input_shape)
 
 def train_model(args, dataset, repeat, save=True):
     """Train a model based on the specified arguments. Optionally save the result. """
-    ((dataset_train, dataset_test), dataset_info, input_shape) = dataset
-    train_examples = dataset_info.splits['train'].num_examples
-    test_examples = dataset_info.splits['test'].num_examples
+    ((dataset_train, dataset_test), input_shape) = dataset
+    train_examples = len(dataset_train)
+    test_examples = len(dataset_test)
+    
     if args.augment == 'True':
         dataset_train = dataset_train.map(augment_data)
 
@@ -66,9 +59,10 @@ def train_model(args, dataset, repeat, save=True):
 
     dataset_test_shuffled = dataset_test.batch(batch_size)
 
-    steps_per_epoch = train_examples // batch_size
-    validation_steps = test_examples // batch_size
-    model = cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape, args.model, activation=args.activation, optimizer=args.optimizer)
+    steps_per_epoch = train_examples / batch_size
+    validation_steps = test_examples / batch_size
+
+    model = cnn_model(steps_per_epoch, validation_steps, dataset_train_shuffled, dataset_test_shuffled, input_shape, args.model, activation=args.activation, optimizer=args.optimizer, epochs = args.epochs)
     if args.model == 'cnn':
         model.cnn()
     if args.model == 'alexnet':
@@ -90,7 +84,11 @@ def train_model(args, dataset, repeat, save=True):
             os.makedirs(output_path)
         
         model.save_final_model(output_path)    
-
+        # Write model summary to output
+        summary_file = os.path.join(output_path, 'summary.txt')
+        with open(summary_file, "w") as summary:
+          model.model.summary(print_fn = lambda x: summary.write(x + '\n'))
+          #summary.write(model.model.summary())
 if __name__ == "__main__":
     # Parse arguments
     args = parse_arguments()

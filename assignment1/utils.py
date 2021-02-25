@@ -19,7 +19,8 @@ def parse_arguments():
 
     parser.add_argument("-r", "--repeats", type=str, default="1",
                         help="How many times to repeat the training?")
-
+    parser.add_argument("-e", "--epochs", type=str, default="es",
+                        help="How many epochs to use for training. Default: use 100 epochs and early stopping.")
     args = parser.parse_args()
 
     if args.optimizer not in {'adam', 'sgd', 'nadam'}:
@@ -30,6 +31,13 @@ def parse_arguments():
 
     if args.model not in {'cnn', 'alexnet', 'vgg', 'lenet', 'resnet'}:
         parser.error("%s is not a known model" % args.model)
+    if args.epochs != 'es':
+        try:
+            args.epochs = int(args.epochs)
+            assert(args.epochs > 0)
+        except:
+            parser.error("epochs is %s, should be 'es' or a positive integer." % args.epochs)
+            
     try:
         args.repeats = int(args.repeats)
         assert(args.repeats > 0)
@@ -39,5 +47,9 @@ def parse_arguments():
 
 def run_name(parameters, end):
     """ Create a name for the combination of parameters"""
-    output_name = "{model}_{optimizer}_{activation}_{augment}_{end}".format(end=end, **parameters)
+    if parameters['epochs'] != 'es':
+        epoch_str = "_%depochs" % parameters['epochs']
+    else:
+        epoch_str = ""
+    output_name = "{model}_{optimizer}_{activation}_{augment}{epoch}_{end}".format(end=end, epoch=epoch_str, **parameters)
     return output_name
