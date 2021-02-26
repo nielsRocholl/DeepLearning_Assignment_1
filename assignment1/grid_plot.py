@@ -60,9 +60,8 @@ def loss_grid_plot(args, max_loss = 1.0, save_path=None):
             ax.tick_params(axis='x', direction="in")
 
             ax.set_ylim(0, y_max)
-            if plot_var == 'acc':
-                ax.set_yticks(np.arange(0, 1, 0.25))
-     
+
+            ax.yaxis.set_major_locator(MaxNLocator(prune='upper', nbins=5))
             # Set y-axis label on the right
             if ax.is_last_col():
                 ax.set_ylabel(var_names[plot_var],size=12)
@@ -80,7 +79,7 @@ def loss_grid_plot(args, max_loss = 1.0, save_path=None):
         for (n_o, opt_key) in enumerate(args.optimizer):
             ax = axes[0][n_a * optimizers + n_o]
             ax.set_title("{}\n{}".format(act_names[act_key], opt_names[opt_key]), size=13)
-    plt.subplots_adjust(left=0.1, bottom=None, right=0.9, top=None, wspace=0.05, hspace=0.15)
+    plt.subplots_adjust(left=0.1, bottom=None, right=0.9, top=None, wspace=0.05, hspace=0.05)
     # Plot the data into the subplots
     for (n_m, model_key) in enumerate(args.model):
         for (n_a, aug_key) in enumerate(args.augment):
