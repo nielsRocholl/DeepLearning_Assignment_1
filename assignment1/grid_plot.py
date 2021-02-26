@@ -117,7 +117,7 @@ def loss_grid_plot(args, max_loss = 1.0, save_path=None):
                             pass
                     if worst_acc == 2:
                         worst_acc = 0
-                    table += "{model:<10} % {activation:<10} % {optimizer:<10} % {augment:<10} % {epoch:<5} % {best:.3f} % {worst:.3f} \\\\\n".format(
+                    table += "{model:<10} & {activation:<10} & {optimizer:<10} & {augment:<10} & {epoch:<5} & {best:.3f} & {worst:.3f} \\\\\n".format(
                         model = model_names[model_key],
                         activation = act_names[act_key],
                         optimizer = opt_names[opt_key],
