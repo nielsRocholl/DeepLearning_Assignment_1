@@ -87,8 +87,8 @@ def train_model(args, dataset, repeat, save=True):
         # Write model summary to output
         summary_file = os.path.join(output_path, 'summary.txt')
         with open(summary_file, "w") as summary:
-          model.model.summary(print_fn = lambda x: summary.write(x + '\n'))
-          #summary.write(model.model.summary())
+            model.model.summary(print_fn = lambda x: summary.write(x + '\n'))
+          
 if __name__ == "__main__":
     # Parse arguments
     args = parse_arguments()

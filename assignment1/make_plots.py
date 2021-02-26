@@ -15,8 +15,3 @@ if __name__ == "__main__":
     cm = stats['mean_confusion']
     save_path = os.path.join(args.output_path, run_name(vars(args), 'confusion' + ".png"))
     analysis.plot_confusion_matrix(cm=cm, classes=cm_plot_labels, title='Confusion Matrix', save_path=save_path)
-    # for var in ["accuracy", "loss"]:
-    #     save_path = os.path.join(
-    #         args.output_path,
-    #         run_name(vars(args), var + ".png")
-    #     )

@@ -8,7 +8,6 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, AveragePooling2D
 from keras.models import Sequential, load_model
 
-# import matplotlib.pyplot as plt
 
 
 '''
