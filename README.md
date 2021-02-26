@@ -1,4 +1,4 @@
-# Comparing the performance of CNNclassifiers on a rock, paper, scissors dataset
+# Comparing the performance of CNN classifiers on a rock, paper, scissors dataset
 
 This repository contains the code for a project comparing the performance of various CNN architectures and setups on the [rock, paper, scissors](http://www.laurencemoroney.com/rock-paper-scissors-dataset/) dataset. The code consists of several Python scripts that can be run from the command line and some Python modules with functionality shared between the scripts. 
 
@@ -63,7 +63,7 @@ The grid plots from the reports can be generated as follows (for the `alexnet` a
 
 ```bash
 python3 assignment1/grid_plot.py -m "alexnet" -aug "False,True" -o "adam,sgd" -a "relu" -r "0,1,2" -l True -out /path/to/data -p "alexnet_loss.pdf" -pw 5 -ph 2.5  -v loss -ymax 6
-%run assignment1/grid_plot.py -m "alexnet" -aug "False,True" -o "adam,sgd" -a "relu" -r "0,1,2" -l True -out /path/to/data -p "alexnet_acc.pdf" -pw 5 -ph 2.5  -v accuracy -ymax 1
+python3 assignment1/grid_plot.py -m "alexnet" -aug "False,True" -o "adam,sgd" -a "relu" -r "0,1,2" -l True -out /path/to/data -p "alexnet_acc.pdf" -pw 5 -ph 2.5  -v accuracy -ymax 1
 ```
 
 We can also easily generate larger or smaller grids by varying the sets of comma-separated values for the parameters. E.g. we could use `-m "lenet,alexnet,vgg,resnet` to make one large grid plot for all models. 
