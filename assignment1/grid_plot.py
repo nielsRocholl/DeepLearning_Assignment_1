@@ -81,11 +81,16 @@ def loss_grid_plot(args, max_loss = 1.0, save_path=None):
             ax.set_title("{}\n{}".format(act_names[act_key], opt_names[opt_key]), size=13)
     plt.subplots_adjust(left=0.1, bottom=None, right=0.9, top=None, wspace=0.05, hspace=0.05)
     # Plot the data into the subplots
+    table = ""
     for (n_m, model_key) in enumerate(args.model):
         for (n_a, aug_key) in enumerate(args.augment):
             row = n_m * augmented + n_a
             for (n_a, act_key) in enumerate(args.activation):
                 for (n_o, opt_key) in enumerate(args.optimizer):
+                    best_acc = 0
+                    best_epoch = 0
+                    worst_acc = 2
+                    worst_epoch = 0
                     col = n_a * optimizers + n_o
                     x = np.linspace(0,25)
                     y = np.linspace(0, 1)
@@ -94,21 +99,41 @@ def loss_grid_plot(args, max_loss = 1.0, save_path=None):
                     run_args.augment = aug_key
                     run_args.activation = act_key
                     run_args.optimizer = opt_key
-                    print(run_args)
+                    #print(run_args)
                     for rep in run_args.repeats:
                         try:
                             history, confusion = analysis.load_result(run_args.output_path, vars(run_args), rep)
+                            run_best_acc = np.max(history['val_accuracy'])
+                            run_best_epoch = np.argmax(history['val_accuracy'])
+                            if (run_best_acc > best_acc):
+                                best_acc = run_best_acc
+                                best_epoch = run_best_epoch
+                            if (run_best_acc < worst_acc) :
+                                worst_acc = run_best_acc
+                                worst_epoch = run_best_epoch
                             axes[row][col].plot(history[plot_var])
                             axes[row][col].plot(history['val_' + plot_var], ls=':')
                         except:
                             pass
+                    if worst_acc == 2:
+                        worst_acc = 0
+                    table += "{model:<10} % {activation:<10} % {optimizer:<10} % {augment:<10} % {epoch:<5} % {best:.3f} % {worst:.3f} \\\\\n".format(
+                        model = model_names[model_key],
+                        activation = act_names[act_key],
+                        optimizer = opt_names[opt_key],
+                        augment = ("Yes"  if aug_key == "True" else "No") ,
+                        epoch = best_epoch,
+                        best = best_acc,
+                        worst = worst_acc
+                    )
 
     # Save the figure
     if not save_path is None:
         fig.savefig(save_path, bbox_inches="tight")
-
-
-    
+    # Save the table
+    with open(save_path + '_table.txt', 'w') as table_file:
+        table_file.write(table)
+    print(table)
 if __name__ == "__main__":
     args = parse_arguments()
     loss_grid_plot(args, save_path = args.plot_path)
