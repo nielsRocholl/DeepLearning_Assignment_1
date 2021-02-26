@@ -129,9 +129,6 @@ class cnn_model:
     def ResNet(self):
         base_model = ResNet50(weights=None, include_top=True, input_shape=self.shape, classes = 3)
         x = base_model.output
-        # x = GlobalAveragePooling2D()(x)
-        # x = Dropout(0.7)(x)
-        #predictions = Dense(3, activation='softmax')(x)
         model = Model(inputs=base_model.input, outputs=x)
 
         self.compile_and_fit(model)
@@ -175,52 +172,6 @@ class cnn_model:
         self.model = load_model(self.mc.filepath)
         self.final_model = final_model
         self.calculate_confusion()
-        #self.plot_training_results(final_model)
-        #self.save_model(model)
-        # Determine the confusion matrix
-        #predictions = model.predict(self.val)
-        #print(predictions)
-    '''
-    Plot accuracy and loss of the model during training
-    '''
-
-    def plot_training_results(self, final_model):
-        with open('Data/' + self.model, 'wb') as file_pi:
-               pickle.dump(final_model.history, file_pi)
-
-        history = pickle.load(open('Data/' + self.model, "rb"))
-
-        # accuracy = history['accuracy']
-        # val_accuracy = history['val_accuracy']
-
-        # loss = history['loss']
-         # val_loss = history['val_loss']
-
-
-        # plt.figure(figsize=(14, 4))
-
-        # plt.subplot(1, 2, 2)
-        # plt.title('Accuracy')
-        # plt.xlabel('Epoch')
-        # plt.ylabel('Accuracy')
-        # plt.plot(accuracy, label='Training set')
-        # plt.plot(val_accuracy, label='Test set', linestyle='--')
-        # plt.legend()
-        # plt.grid(linestyle='--', linewidth=1, alpha=0.5)
-
-        # plt.subplot(1, 2, 1)
-        # plt.title('Loss')
-        # plt.xlabel('Epoch')
-        # plt.ylabel('Loss')
-        # plt.plot(loss, label='Training set')
-        # plt.plot(val_loss, label='Test set', linestyle='--')
-        # plt.legend()
-        # plt.grid(linestyle='--', linewidth=1, alpha=0.5)
-
-
-        # plt.savefig('Plots/' + self.model + '.png')
-        # plt.show()
-
 
     def calculate_confusion(self):
         predictions = predictions = self.model.predict(self.val)
