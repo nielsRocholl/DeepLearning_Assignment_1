@@ -46,7 +46,7 @@ def loss_grid_plot(args, max_loss = 1.0, save_path=None):
 
     var_names = {
         "loss" : "Loss",
-        "acc" : "Accuracy"
+        "accuracy" : "Accuracy"
     }
     
     rows = augmented * models
